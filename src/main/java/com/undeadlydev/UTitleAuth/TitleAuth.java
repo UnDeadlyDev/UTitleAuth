@@ -124,6 +124,9 @@ public class TitleAuth extends JavaPlugin {
     }
 
     public void CheckUpdate() {
+        if(!getConfig().getBoolean("update-check")) {
+            return;
+        }
         new BukkitRunnable() {
             public void run() {
                 SpigotUpdater updater = new SpigotUpdater(instance, 88058);
