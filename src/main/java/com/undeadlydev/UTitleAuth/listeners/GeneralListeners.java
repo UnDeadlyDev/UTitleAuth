@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -47,19 +46,25 @@ public class GeneralListeners implements Listener {
 	public void AuthLoginEvent(PlayerJoinEvent event) {
 		Player p = event.getPlayer();
 		String pl = p.getName();
-		if (AuthMeApi.getInstance().isRegistered(pl)) {
-			SendTitleNoLogin(p);
-			SecurePlayerLogin.add(p.getUniqueId());
-			if (plugin.getConfig().getBoolean("config.actionbar.enabled")) {
-				SendAcNoLogin(p);
+
+		Bukkit.getScheduler().scheduleSyncDelayedTask(AuthMeApi.getInstance().getPlugin(), () -> {
+			if (!AuthMeApi.getInstance().isRegistered(pl)) {
+
+				SendTitleNoRegister(p);
+				SecurePlayerRegister.add(p.getUniqueId());
+
+				if (plugin.getConfig().getBoolean("config.actionbar.enabled"))
+					SendAcNoRegister(p);
+
+			} else if(!AuthMeApi.getInstance().isAuthenticated(p)) {
+
+				SendTitleNoLogin(p);
+				SecurePlayerLogin.add(p.getUniqueId());
+
+				if (plugin.getConfig().getBoolean("config.actionbar.enabled"))
+					SendAcNoLogin(p);
 			}
-			return;
-		}
-		SendTitleNoRegister(p);
-		SecurePlayerRegister.add(p.getUniqueId());
-		if (plugin.getConfig().getBoolean("config.actionbar.enabled")) {
-			SendAcNoRegister(p);
-		}
+		}, 20);
 	}
 
 	private void SendNoLogin(Player p) {

@@ -18,9 +18,9 @@ import com.undeadlydev.UTitleAuth.cmds.utitleauthCMD;
 import com.undeadlydev.UTitleAuth.listeners.GeneralListeners;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class TitleAuth  extends JavaPlugin {
+public class TitleAuth extends JavaPlugin {
 
-	private static TitleAuth instance;
+    private static TitleAuth instance;
 
     private AddonManager adm;
     private VersionController vc;
@@ -47,7 +47,7 @@ public class TitleAuth  extends JavaPlugin {
         FileConfiguration config = p.getConfig();
         return config;
     }
-    
+
     public void onEnable() {
         instance = this;
         PluginManager pm = getServer().getPluginManager();
@@ -70,10 +70,14 @@ public class TitleAuth  extends JavaPlugin {
         sendLogMessage("&fThanks for use my plugin :D");
         sendLogMessage(" ");
         sendLogMessage("&7-----------------------------------");
-        CheckUpdate();
+
+        if(getConfig().getBoolean("update-check")) {
+            CheckUpdate();
+        }
+
     }
 
-    private  void  loadconfig(){
+    private void loadconfig() {
         saveDefaultConfig();
         reloadConfig();
     }
@@ -81,16 +85,16 @@ public class TitleAuth  extends JavaPlugin {
     public void LoadHooks() {
         if (Bukkit.getPluginManager().isPluginEnabled("AuthMe")) {
             sendLogMessage("&fPlugin &aAuthMe &aHooked Successfully!");
-    	} else {
+        } else {
             sendLogMessage("&fPlugin &cAuthMe &cHooked not found!");
-	    	Bukkit.getPluginManager().disablePlugin(this);
-    	}
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
         if (Bukkit.getPluginManager().isPluginEnabled("FastLogin")) {
-        	Utils.FastLogin(true);
+            Utils.FastLogin(true);
             sendLogMessage("&fPlugin &aFastLogin &bAutoLogin Premium &aHooked Successfully!");
-    	} else {
-    		Utils.FastLogin(false);
-    	}
+        } else {
+            Utils.FastLogin(false);
+        }
         if (Bukkit.getPluginManager().isPluginEnabled("CMILib")) {
             Utils.CMILib(true);
             sendLogMessage("&fPlugin &aCMILib &aHooked Successfully!");
@@ -98,7 +102,7 @@ public class TitleAuth  extends JavaPlugin {
             Utils.CMILib(false);
         }
     }
-    
+
     public void onDisable() {
         sendLogMessage("&7-----------------------------------");
         sendLogMessage("");
@@ -119,22 +123,20 @@ public class TitleAuth  extends JavaPlugin {
         metrics.addCustomChart(new SimplePie("chart_id", () -> "My value"));
     }
 
-    private void CheckUpdate() {
-        if(getConfig().getBoolean("update-check")) {
-            new BukkitRunnable() {
-                public void run() {
-                    SpigotUpdater updater = new SpigotUpdater(instance, 88058);
-                    try {
-                        if (updater.checkForUpdates()) {
-                            sendLogMessage("An update for UTitleAuth (v" + updater.getLatestVersion() + ") is available at:");
-                            sendLogMessage(updater.getResourceURL());
-                        }
-                    } catch (Exception e) {
-                        sendLogMessage("Failed to check for a update on spigot.");
+    public void CheckUpdate() {
+        new BukkitRunnable() {
+            public void run() {
+                SpigotUpdater updater = new SpigotUpdater(instance, 88058);
+                try {
+                    if (updater.checkForUpdates()) {
+                        sendLogMessage("An update for UTitleAuth (v" + updater.getLatestVersion() + ") is available at:");
+                        sendLogMessage(updater.getResourceURL());
                     }
+                } catch (Exception e) {
+                    sendLogMessage("Failed to check for a update on spigot.");
                 }
+            }
 
-            }.runTask(this);
-        }
+        }.runTask(this);
     }
 }

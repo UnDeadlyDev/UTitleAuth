@@ -25,15 +25,16 @@ public class utitleauthCMD extends CommandUtils<TitleAuth> {
                 sendHelp(commandSender);
                 return true;
             }
+
             switch (args[0].toLowerCase()) {
                 case "reload":
                     plugin.reloadConfig();
+                    TitleAuth.get().CheckUpdate();
                     plugin.getLang().reload();
                     commandSender.sendMessage(ChatUtils.colorCodes("&e[UTitleAuth] " + plugin.getLang().get("messages.reload")));
                     break;
                 default:
                     sendHelp(commandSender);
-                    break;
             }
         }
         if (commandSender instanceof Player) {
@@ -45,6 +46,7 @@ public class utitleauthCMD extends CommandUtils<TitleAuth> {
             switch (args[0].toLowerCase()) {
                 case "reload":
                     plugin.reloadConfig();
+                    TitleAuth.get().CheckUpdate();
                     plugin.getLang().reload();
                     p.sendMessage(ChatUtils.colorCodes("&e[UTitleAuth] " + plugin.getLang().get("messages.reload")));
                     break;
