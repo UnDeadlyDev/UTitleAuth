@@ -6,7 +6,6 @@ public class ChatUtils {
 
     public static String colorCodes(String message) {
         return HexUtils.colorify(message);
-
     }
 
     public static String clearColor(String message) {

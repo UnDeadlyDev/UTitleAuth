@@ -36,6 +36,10 @@ public class TitleAuth  extends JavaPlugin {
     private Set<UUID> SecurePlayerLogin = Sets.newHashSet();
     private Map<String, BukkitTask> cancelac = new HashMap<>();
 
+    private int pluginId;
+
+    private int resourceId;
+
     public static TitleAuth get() {
         return instance;
     }
@@ -76,6 +80,10 @@ public class TitleAuth  extends JavaPlugin {
         return cancelac;
     }
 
+    public int getResourceId() {
+        return resourceId;
+    }
+
     public static FileConfiguration getOtherConfig() {
         Plugin p = Bukkit.getServer().getPluginManager().getPlugin("AuthMe");
         FileConfiguration config = p.getConfig();
@@ -84,8 +92,10 @@ public class TitleAuth  extends JavaPlugin {
     
     public void onEnable() {
         instance = this;
+        pluginId = 14756;
+        resourceId = 88058;
         PluginManager pm = getServer().getPluginManager();
-        sendLogMessage("&7-----------------------------------");
+        sendLogMessage("&7-----------------------------------", true);
         getConfig().options().copyDefaults(true);
         saveConfig();
         lang = new FileManager("lang", true);
@@ -98,48 +108,52 @@ public class TitleAuth  extends JavaPlugin {
         pm.registerEvents(new GeneralListeners(this), this);
         pm.registerEvents(new LoginListener(this), this);
         pm.registerEvents(new LogoutListener(this), this);
-        pm.registerEvents(new PlayerJoinEvent(this), this);
+        pm.registerEvents(new PlayerListener(this), this);
         pm.registerEvents(new RegisterListener(this), this);
         pm.registerEvents(new UnregisterbyAdminListener(this), this);
         pm.registerEvents(new UnregisterListener(this), this);
+        sendLogMessage(" ", true);
+        sendLogMessage("&7-----------------------------------", true);
+        sendLogMessage(" ", true);
+        sendLogMessage("&fServer: &c" + getServer().getName() + " " + getServer().getBukkitVersion(), true);
+        sendLogMessage("&fSuccessfully Plugin &aEnabled! &cv" + getDescription().getVersion(), true);
+        sendLogMessage("&fCreator: &eUnDeadlyDev", true);
+        sendLogMessage("&fThanks for use my plugin :D", true);
+        sendLogMessage(" ", true);
+        sendLogMessage("&7-----------------------------------", true);
         loadMetrics();
-        sendLogMessage(" ");
-        sendLogMessage("&7-----------------------------------");
-        sendLogMessage(" ");
-        sendLogMessage("&fServer: &c" + getServer().getName() + " " + getServer().getBukkitVersion());
-        sendLogMessage("&fSuccessfully Plugin &aEnabled! &cv" + getDescription().getVersion());
-        sendLogMessage("&fCreator: &eUnDeadlyDev");
-        sendLogMessage("&fThanks for use my plugin :D");
-        sendLogMessage(" ");
-        sendLogMessage("&7-----------------------------------");
         CheckUpdate();
     }
 
     public void loadHooks() {
         if (Bukkit.getPluginManager().isPluginEnabled("AuthMe")) {
-            sendLogMessage("&fPlugin &aAuthMe &aHooked Successfully!");
+            sendLogMessage("&fPlugin &aAuthMe &aHooked Successfully!", true);
     	} else {
-            sendLogMessage("&fPlugin &cAuthMe &cHooked not found!");
+            sendLogMessage("&fPlugin &cAuthMe &cHooked not found!", true);
 	    	Bukkit.getPluginManager().disablePlugin(this);
     	}
     }
     
     public void onDisable() {
-        sendLogMessage("&7-----------------------------------");
-        sendLogMessage("");
-        sendLogMessage("&fSuccessfully Plugin &cDisable!");
-        sendLogMessage("&fCreator: &eUnDeadlyDev");
-        sendLogMessage("&fThanks for use my plugin :D");
-        sendLogMessage(" ");
-        sendLogMessage("&7-----------------------------------");
+        sendLogMessage("&7-----------------------------------", true);
+        sendLogMessage(" ", true);
+        sendLogMessage("&fSuccessfully Plugin &cDisable!", true);
+        sendLogMessage("&fCreator: &eUnDeadlyDev", true);
+        sendLogMessage("&fThanks for use my plugin :D", true);
+        sendLogMessage(" ", true);
+        sendLogMessage("&7-----------------------------------", true);
     }
 
-    public void sendLogMessage(String msg) {
-        Bukkit.getConsoleSender().sendMessage(ChatUtils.parseLegacy("&7[&e&lUTitleAuth&7] &8| " + msg));
+    public void sendLogMessage(String msg, boolean bool) {
+        if (bool) {
+            Bukkit.getConsoleSender().sendMessage(ChatUtils.parseLegacy("&7[&e&lUTitleAuth&7] &8| " + msg));
+        } else {
+            Bukkit.getConsoleSender().sendMessage(ChatUtils.parseLegacy(msg));
+        }
+
     }
 
     public void loadMetrics() {
-        int pluginId = 14756;
         Metrics metrics = new Metrics(this, pluginId);
         metrics.addCustomChart(new SimplePie("chart_id", () -> "My value"));
     }
@@ -148,14 +162,13 @@ public class TitleAuth  extends JavaPlugin {
         if(getConfig().getBoolean("update-check")) {
             new BukkitRunnable() {
                 public void run() {
-                    SpigotUpdater updater = new SpigotUpdater(instance, 88058);
+                    SpigotUpdater updater = new SpigotUpdater(instance, resourceId);
                     try {
                         if (updater.checkForUpdates()) {
-                            sendLogMessage("An update for UTitleAuth (v" + updater.getLatestVersion() + ") is available at:");
-                            sendLogMessage(updater.getResourceURL());
+                            sendLogMessage(getLang().get("message.notifyUpdate").replace("{CURRENT}", getDescription().getVersion()).replace("{NEW}", updater.getLatestVersion()).replace("{LINK}", updater.getResourceURL()), false);
                         }
                     } catch (Exception e) {
-                        sendLogMessage("Failed to check for a update on spigot.");
+                        sendLogMessage("Failed to check for a update on spigot.", true);
                     }
                 }
 

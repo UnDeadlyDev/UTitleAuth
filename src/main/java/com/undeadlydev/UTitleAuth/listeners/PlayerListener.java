@@ -2,25 +2,25 @@ package com.undeadlydev.UTitleAuth.listeners;
 
 import com.undeadlydev.UTitleAuth.TitleAuth;
 import com.undeadlydev.UTitleAuth.superclass.SpigotUpdater;
-import com.undeadlydev.UTitleAuth.utils.HexUtils;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class PlayerJoinEvent implements Listener {
+public class PlayerListener implements Listener {
 
     private TitleAuth plugin;
 
-    public PlayerJoinEvent(TitleAuth plugin) {
+    public PlayerListener(TitleAuth plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void AuthLoginEvent(org.bukkit.event.player.PlayerJoinEvent event) {
+    public void AuthLoginEvent(PlayerJoinEvent event) {
         Player p = event.getPlayer();
         String pl = p.getName();
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -41,17 +41,16 @@ public class PlayerJoinEvent implements Listener {
     }
 
     @EventHandler
-    public void PlayerJoinUpdateCheck(org.bukkit.event.player.PlayerJoinEvent e) {
+    public void PlayerJoinUpdateCheck(PlayerJoinEvent e) {
         if (plugin.getConfig().getBoolean("update-check")) {
             final Player p = e.getPlayer();
             if (p.isOp() || p.hasPermission("utitleauth.updatecheck")) {
                 new BukkitRunnable() {
                     public void run() {
-                        SpigotUpdater updater = new SpigotUpdater(plugin, 88058);
+                        SpigotUpdater updater = new SpigotUpdater(plugin, plugin.getResourceId());
                         try {
                             if (updater.checkForUpdates()) {
-                                p.sendMessage(HexUtils.colorify("&bAn update for &fUTitleAuth &e(&fUTitleAuth &fv" + updater.getLatestVersion() + "&e)"));
-                                p.sendMessage(HexUtils.colorify("&bis available at &e" + updater.getResourceURL()));
+                                p.sendMessage(plugin.getLang().get("message.notifyUpdate").replace("{CURRENT}", plugin.getDescription().getVersion()).replace("{NEW}", updater.getLatestVersion()).replace("{LINK}", updater.getResourceURL()));
                             }
                         } catch (Exception e) {}
                     }

@@ -1,6 +1,7 @@
 update-check: true
+
 addons:
-  PlaceholderAPI: false
+  PlaceholderAPI: true
   CMILib: false
   FastLogin: false
 

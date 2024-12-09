@@ -23,7 +23,7 @@ public class AddonManager {
         TitleAuth plugin = TitleAuth.get();
         if (plugin.getConfig().isSet("addons." + pluginName) && plugin.getConfig().getBoolean("addons." + pluginName)) {
             if (Bukkit.getPluginManager().isPluginEnabled(pluginName)) {
-                plugin.sendLogMessage("Hooked into §a" + pluginName + "§e!");
+                plugin.sendLogMessage("Hooked into §a" + pluginName + "§e!", true);
                 return true;
             } else {
                 plugin.getConfig().set("addons." + pluginName, false);
@@ -35,7 +35,6 @@ public class AddonManager {
     }
 
     public void reload() {
-        TitleAuth plugin = TitleAuth.get();
         if (check("PlaceholderAPI")) {
             placeholder = new PlaceholderAPIAddon();
         }
