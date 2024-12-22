@@ -9,7 +9,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerListener implements Listener {
 
@@ -23,38 +22,43 @@ public class PlayerListener implements Listener {
     public void AuthLoginEvent(PlayerJoinEvent event) {
         Player p = event.getPlayer();
         String pl = p.getName();
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            public void run() {
-                if (!AuthMeApi.getInstance().isRegistered(pl)) {
-                    plugin.getTm().SendTitleNoRegister(p);
-                    plugin.addRegisterSecure(p);
-                    if (plugin.getConfig().getBoolean("config.actionbar.enabled"))
-                        plugin.getAc().SendAcNoRegister(p);
-                } else if(!AuthMeApi.getInstance().isAuthenticated(p)) {
-                    plugin.getTm().SendTitleNoLogin(p);
-                    plugin.addLoginSecure(p);
-                    if (plugin.getConfig().getBoolean("config.actionbar.enabled"))
-                        plugin.getAc().SendAcNoLogin(p);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            if (!AuthMeApi.getInstance().isRegistered(pl)) {
+                plugin.getTm().sendTitleNoRegister(p);
+                plugin.addRegisterSecure(p);
+                if (plugin.getConfig().getBoolean("config.actionbar.enabled")) {
+                    plugin.getAcM().sendAcNoRegister(p);
+                }
+                if (plugin.getConfig().getBoolean("config.bossbar.enabled")) {
+                    plugin.getBM().sendBossNoRegister(p);
+                }
+
+            } else if(!AuthMeApi.getInstance().isAuthenticated(p)) {
+                plugin.getTm().sendTitleNoLogin(p);
+                plugin.addLoginSecure(p);
+                if (plugin.getConfig().getBoolean("config.actionbar.enabled")) {
+                    plugin.getAcM().sendAcNoLogin(p);
+                }
+                if (plugin.getConfig().getBoolean("config.bossbar.enabled")) {
+                    plugin.getBM().sendBossNoLogin(p);
                 }
             }
-        },  20L);
+        }, 20L);
     }
 
     @EventHandler
-    public void PlayerJoinUpdateCheck(PlayerJoinEvent e) {
+    public void PlayerJoinUpdateCheck(PlayerJoinEvent event) {
         if (plugin.getConfig().getBoolean("update-check")) {
-            final Player p = e.getPlayer();
+            final Player p = event.getPlayer();
             if (p.isOp() || p.hasPermission("utitleauth.updatecheck")) {
-                new BukkitRunnable() {
-                    public void run() {
-                        SpigotUpdater updater = new SpigotUpdater(plugin, plugin.getResourceId());
-                        try {
-                            if (updater.checkForUpdates()) {
-                                p.sendMessage(plugin.getLang().get("message.notifyUpdate").replace("{CURRENT}", plugin.getDescription().getVersion()).replace("{NEW}", updater.getLatestVersion()).replace("{LINK}", updater.getResourceURL()));
-                            }
-                        } catch (Exception e) {}
-                    }
-                }.runTaskAsynchronously(plugin);
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                    SpigotUpdater updater = new SpigotUpdater(plugin, plugin.getResourceId());
+                    try {
+                        if (updater.checkForUpdates()) {
+                            p.sendMessage(plugin.getLang().get("message.notifyUpdate").replace("{CURRENT}", plugin.getDescription().getVersion()).replace("{NEW}", updater.getLatestVersion()).replace("{LINK}", updater.getResourceURL()));
+                        }
+                    } catch (Exception e) {}
+                });
             }
         }
     }

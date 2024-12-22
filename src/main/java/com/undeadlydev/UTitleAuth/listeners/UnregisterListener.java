@@ -17,10 +17,13 @@ public class UnregisterListener implements Listener {
     @EventHandler
     public void UnRegisterByPlayer(UnregisterByPlayerEvent event) {
         Player p = event.getPlayer();
-        plugin.getTm().SendTitleNoRegister(p);
+        plugin.getTm().sendTitleNoRegister(p);
         plugin.addRegisterSecure(p);
         if (plugin.getConfig().getBoolean("config.actionbar.enabled")) {
-            plugin.getAc().SendAcNoRegister(p);
+            plugin.getAcM().sendAcNoRegister(p);
+        }
+        if (plugin.getConfig().getBoolean("config.bossbar.enabled")) {
+            plugin.getBM().sendBossNoRegister(p);
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.undeadlydev.UTitleAuth.addons.placeholders;
+package com.undeadlydev.UTitleAuth.addons;
 
 import com.undeadlydev.UTitleAuth.interfaces.CMIAddon;
 

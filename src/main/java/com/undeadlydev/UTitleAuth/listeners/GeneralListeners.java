@@ -1,10 +1,13 @@
 package com.undeadlydev.UTitleAuth.listeners;
 
+import com.undeadlydev.UTitleAuth.utils.BossBarUtils;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.undeadlydev.UTitleAuth.TitleAuth;
@@ -30,6 +33,17 @@ public class GeneralListeners implements Listener {
 		Player p = e.getPlayer();
 		remove(p);
 	}
+
+	@EventHandler
+	public void onPlayerMoveEvent(PlayerMoveEvent e) {
+		Player player = e.getPlayer();
+		Location to = e.getTo();
+		Location from = e.getFrom();
+		if (BossBarUtils.contains(player) && (to.getBlockX() != from.getBlockX() || to.getBlockY() != from.getBlockY() || to.getBlockZ() != from.getBlockZ())) {
+			BossBarUtils.move(player);
+		}
+	}
+
 
 	private void remove(Player p) {
 		if (plugin.getRegisterSecure().contains(p.getUniqueId())) {

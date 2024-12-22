@@ -46,3 +46,10 @@ actionbar:
   register: "&a&lRegistration completed have fun."
   login: "&a&lLogin successful."
   autologin: "&dAutologin as a premium user."
+
+bossbar:
+  noregister: "&cPlease register to join. Register time: &6<time>&cs."
+  nologin: "&cVerify your account. Login time: &6<time>&cs."
+  register: "&a&lRegistration completed have fun."
+  login: "&a&lLogin successful."
+  autologin: "&dAutologin as a premium user."

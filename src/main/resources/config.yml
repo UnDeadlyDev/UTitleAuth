@@ -33,6 +33,19 @@ config:
     autologin:
       time: #This is time of stay message in seconds.
         stay: 5
+  bossbar:
+    enabled: true
+    color: RED #ONLY WORK IN 1.9 TO UP
+    style: SOLID #ONLY WORK IN 1.9 TO UP
+    register:
+      time: #This is time of stay message in seconds.
+        stay: 5
+    login:
+      time: #This is time of stay message in seconds.
+        stay: 5
+    autologin:
+      time: #This is time of stay message in seconds.
+        stay: 5
   message:
     welcome:
       register: #This message is customizable in lang.yml - "center" is so that the message is centered in the chat

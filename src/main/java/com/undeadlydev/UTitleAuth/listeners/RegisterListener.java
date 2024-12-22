@@ -23,9 +23,12 @@ public class RegisterListener implements Listener {
             SendNoLogin(p);
             return;
         }
-        plugin.getTm().SendTitleOnRegister(p);
+        plugin.getTm().sendTitleOnRegister(p);
         if (plugin.getConfig().getBoolean("config.actionbar.enabled")) {
-            plugin.getAc().SendAcOnRegister(p);
+            plugin.getAcM().sendAcOnRegister(p);
+        }
+        if (plugin.getConfig().getBoolean("config.bossbar.enabled")) {
+            plugin.getBM().sendBossOnRegister(p);
         }
         if (plugin.getConfig().getBoolean("config.message.welcome.register.enabled")) {
             SendWOnRegister(p);
@@ -33,10 +36,13 @@ public class RegisterListener implements Listener {
     }
 
     private void SendNoLogin(Player p) {
-        plugin.getTm().SendTitleNoLogin(p);
+        plugin.getTm().sendTitleNoLogin(p);
         plugin.addLoginSecure(p);
         if (plugin.getConfig().getBoolean("config.actionbar.enabled")) {
-            plugin.getAc().SendAcNoLogin(p);
+            plugin.getAcM().sendAcNoLogin(p);
+        }
+        if (plugin.getConfig().getBoolean("config.bossbar.enabled")) {
+            plugin.getBM().sendBossNoLogin(p);
         }
     }
 

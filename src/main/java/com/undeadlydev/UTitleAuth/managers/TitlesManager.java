@@ -9,7 +9,7 @@ public class TitlesManager {
 
     TitleAuth plugin = TitleAuth.get();
 
-    public void SendTitlePremium(Player player) {
+    public void sendTitlePremium(Player player) {
         String Title = plugin.getLang().get(player, "titles.autologin.title");
         String subTitle = plugin.getLang().get(player, "titles.autologin.subtitle");
 
@@ -23,7 +23,7 @@ public class TitlesManager {
         }
     }
 
-    public void SendTitleNoRegister(Player player) {
+    public void sendTitleNoRegister(Player player) {
         String Title = plugin.getLang().get(player, "titles.noregister.title");
         String subTitle = plugin.getLang().get(player, "titles.noregister.subtitle");
         if (plugin.getAdm().getCMIAddon()) {
@@ -36,7 +36,7 @@ public class TitlesManager {
         }
     }
 
-    public void SendTitleNoLogin(Player player) {
+    public void sendTitleNoLogin(Player player) {
         String Title = plugin.getLang().get(player, "titles.nologin.title");
         String subTitle = plugin.getLang().get(player, "titles.nologin.subtitle");
         if (plugin.getAdm().getCMIAddon()) {
@@ -49,7 +49,7 @@ public class TitlesManager {
         }
     }
 
-    public void SendTitleOnRegister(Player player) {
+    public void sendTitleOnRegister(Player player) {
         String Title = plugin.getLang().get(player, "titles.register.title");
         String subTitle = plugin.getLang().get(player, "titles.register.subtitle");
 
@@ -64,7 +64,7 @@ public class TitlesManager {
         }
     }
 
-    public void SendTitleOnLogin(Player player) {
+    public void sendTitleOnLogin(Player player) {
         String Title = plugin.getLang().get(player, "titles.login.title");
         String subTitle = plugin.getLang().get(player, "titles.login.subtitle");
 

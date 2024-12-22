@@ -25,46 +25,32 @@ public class LoginListener implements Listener {
         plugin.getLoginSecure().remove(p.getUniqueId());
         if (AuthMeApi.getInstance().isAuthenticated(p)) {
             if (plugin.getAdm().getFastLAddon() && JavaPlugin.getPlugin(FastLoginBukkit.class).getStatus(p.getUniqueId()) == PremiumStatus.PREMIUM) {
-                plugin.getTm().SendTitlePremium(p);
+                plugin.getTm().sendTitlePremium(p);
                 if (plugin.getConfig().getBoolean("config.actionbar.enabled")) {
                     plugin.cancelAc().remove(p.getName());
-                    plugin.getAc().SendAcOnPremium(p);
+                    plugin.getAcM().sendAcOnPremium(p);
+                }
+                if (plugin.getConfig().getBoolean("config.bossbar.enabled")) {
+                    plugin.cancelAc().remove(p.getName());
+                    plugin.getBM().sendBossOnPremium(p);
                 }
                 if (plugin.getConfig().getBoolean("config.message.welcome.autologin.enabled")) {
-                    SendWPremium(p);
+                    plugin.getWm().sendWPremium(p);
                 }
             } else {
-                plugin.getTm().SendTitleOnLogin(p);
+                plugin.getTm().sendTitleOnLogin(p);
                 if (plugin.getConfig().getBoolean("config.actionbar.enabled")) {
                     plugin.cancelAc().remove(p.getName());
-                    plugin.getAc().SendAcOnLogin(p);
+                    plugin.getAcM().sendAcOnLogin(p);
+                }
+                if (plugin.getConfig().getBoolean("config.bossbar.enabled")) {
+                    plugin.cancelAc().remove(p.getName());
+                    plugin.getBM().sendBossOnLogin(p);
                 }
                 if (plugin.getConfig().getBoolean("config.message.welcome.login.enabled")) {
-                    SendWOnLogin(p);
+                    plugin.getWm().sendWOnLogin(p);
                 }
             }
-        }
-    }
-
-    private void SendWOnLogin(Player player) {
-        String mesage = plugin.getLang().get(player, "message.welcome.login");
-        if (plugin.getConfig().getBoolean("config.message.welcome.login.center")) {
-            for (String s : mesage.split("\\n")) {
-                player.sendMessage(CenterMessage.getCenteredMessage(s));
-            }
-        } else {
-            player.sendMessage(mesage);
-        }
-    }
-
-    private void SendWPremium(Player player) {
-        String mesage = plugin.getLang().get(player, "message.welcome.autologin");
-        if (plugin.getConfig().getBoolean("config.message.welcome.autologin.center")) {
-            for (String s : mesage.split("\\n")) {
-                player.sendMessage(CenterMessage.getCenteredMessage(s));
-            }
-        } else {
-            player.sendMessage(mesage);
         }
     }
 }

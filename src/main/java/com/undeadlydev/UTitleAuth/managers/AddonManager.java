@@ -2,9 +2,9 @@ package com.undeadlydev.UTitleAuth.managers;
 
 
 import com.undeadlydev.UTitleAuth.TitleAuth;
-import com.undeadlydev.UTitleAuth.addons.placeholders.CMILibAddon;
-import com.undeadlydev.UTitleAuth.addons.placeholders.FastLoginAddon;
-import com.undeadlydev.UTitleAuth.addons.placeholders.PlaceholderAPIAddon;
+import com.undeadlydev.UTitleAuth.addons.CMILibAddon;
+import com.undeadlydev.UTitleAuth.addons.FastLoginAddon;
+import com.undeadlydev.UTitleAuth.addons.PlaceholderAPIAddon;
 import com.undeadlydev.UTitleAuth.interfaces.CMIAddon;
 import com.undeadlydev.UTitleAuth.interfaces.FastLAddon;
 import com.undeadlydev.UTitleAuth.interfaces.PlaceholderAddon;
@@ -23,7 +23,7 @@ public class AddonManager {
         TitleAuth plugin = TitleAuth.get();
         if (plugin.getConfig().isSet("addons." + pluginName) && plugin.getConfig().getBoolean("addons." + pluginName)) {
             if (Bukkit.getPluginManager().isPluginEnabled(pluginName)) {
-                plugin.sendLogMessage("Hooked into §a" + pluginName + "§e!", true);
+                plugin.sendLogMessage("Hooked into §a" + pluginName + "§e!");
                 return true;
             } else {
                 plugin.getConfig().set("addons." + pluginName, false);
@@ -65,5 +65,17 @@ public class AddonManager {
             value = placeholder.parsePlaceholders(p, value);
         }
         return value;
+    }
+
+    public boolean isPlaceholderAPIEnabled() {
+        return placeholder != null;
+    }
+
+    public boolean isFastLoginEnabled() {
+        return  fastaddon != null;
+    }
+
+    public boolean isCMILibEnabled() {
+        return cmiaddon != null;
     }
 }
