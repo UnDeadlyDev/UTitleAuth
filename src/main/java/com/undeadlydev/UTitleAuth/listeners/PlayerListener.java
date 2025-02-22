@@ -32,6 +32,9 @@ public class PlayerListener implements Listener {
                 if (plugin.getConfig().getBoolean("config.bossbar.enabled")) {
                     plugin.getBM().sendBossNoRegister(p);
                 }
+                if (plugin.getConfig().getBoolean("config.message.welcome.onjoin.register.enabled")) {
+                    plugin.getWm().sendJoinRegister(p);
+                }
 
             } else if(!AuthMeApi.getInstance().isAuthenticated(p)) {
                 plugin.getTm().sendTitleNoLogin(p);
@@ -41,6 +44,9 @@ public class PlayerListener implements Listener {
                 }
                 if (plugin.getConfig().getBoolean("config.bossbar.enabled")) {
                     plugin.getBM().sendBossNoLogin(p);
+                }
+                if (plugin.getConfig().getBoolean("config.message.welcome.onjoin.register.enabled")) {
+                    plugin.getWm().sendJoinLogin(p);
                 }
             }
         }, 20L);

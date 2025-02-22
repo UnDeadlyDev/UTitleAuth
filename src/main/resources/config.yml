@@ -48,6 +48,13 @@ config:
         stay: 5
   message:
     welcome:
+      onjoin:
+        register:
+          enabled: false
+          center: true
+        login:
+          enabled: false
+          center: true
       register: #This message is customizable in lang.yml - "center" is so that the message is centered in the chat
         enabled: true
         center: true

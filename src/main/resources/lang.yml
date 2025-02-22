@@ -21,6 +21,21 @@ message:
   reloadLang: "&cLang was reloaded."
   noPermission: "&cYou are not authorized for this."
   welcome:
+    onjoin:
+      register: |-
+        &7
+        &7&6&lWelcome &c&l{player} to server
+        &7
+        &7&6&lFirst need register to join
+        &7
+        &7cUse: /reigster <pass> <pass>
+        &7
+      login: |-
+        &7
+        &7&a&lWelcome back &c&l{player} to server
+        &7
+        &7Please use /login <pass>
+        &7
     register: |-
       &7
       &7&6&lWELCOME &c&l{player}

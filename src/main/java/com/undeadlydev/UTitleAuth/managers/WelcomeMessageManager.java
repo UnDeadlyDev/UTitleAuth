@@ -29,4 +29,26 @@ public class WelcomeMessageManager {
             player.sendMessage(mesage);
         }
     }
+
+    public void sendJoinRegister(Player player) {
+        String mesage = plugin.getLang().get(player, "message.welcome.onjoin.register");
+        if (plugin.getConfig().getBoolean("config.message.welcome.onjoin.register.center")) {
+            for (String s : mesage.split("\\n")) {
+                player.sendMessage(CenterMessage.getCenteredMessage(s));
+            }
+        } else {
+            player.sendMessage(mesage);
+        }
+    }
+
+    public void sendJoinLogin(Player player) {
+        String mesage = plugin.getLang().get(player, "message.welcome.onjoin.login");
+        if (plugin.getConfig().getBoolean("config.message.welcome.onjoin.login.center")) {
+            for (String s : mesage.split("\\n")) {
+                player.sendMessage(CenterMessage.getCenteredMessage(s));
+            }
+        } else {
+            player.sendMessage(mesage);
+        }
+    }
 }
