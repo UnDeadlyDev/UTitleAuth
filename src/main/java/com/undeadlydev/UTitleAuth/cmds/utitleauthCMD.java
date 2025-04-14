@@ -13,10 +13,14 @@ public class utitleauthCMD extends CommandManager<TitleAuth> {
 	public TitleAuth plugin;
     public utitleauthCMD(TitleAuth plugin) {
         super(plugin, "utitleauth");
+
         setPermission("utitleauth.admin");
         setPermissionMessage(plugin.getLang().get("message.noPermission"));
-        addTabbComplete(0, "reload");
-        registerCommand();
+
+        addTabSimple(0, "reload");
+
+        addTabWithContext(1, null, "reload", "config", "lang", "menu");
+        register();
         this.plugin = plugin;
     }
   
@@ -70,6 +74,11 @@ public class utitleauthCMD extends CommandManager<TitleAuth> {
             }
         }
 		return true;
+    }
+
+    @Override
+    public String getUsage() {
+        return "";
     }
 
     private void sendHelp(CommandSender s) {

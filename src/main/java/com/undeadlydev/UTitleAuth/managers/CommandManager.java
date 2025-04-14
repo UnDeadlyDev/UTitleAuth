@@ -27,52 +27,29 @@ public abstract class CommandManager<T extends JavaPlugin> extends Command imple
     }
 
     private final T plugin;
-    private final HashMap<Integer, ArrayList<TabCommand>> tabComplete;
-    private boolean register = false;
+    private final HashMap<Integer, List<TabCommand>> tabComplete;
+    private boolean registered = false;
+    private String description = "";
 
     protected CommandManager(T plugin, String name) {
         super(name);
 
         assert commandMap != null;
         assert plugin != null;
-        assert name.length() > 0;
+        assert name != null && !name.isEmpty();
 
         setLabel(name);
         this.plugin = plugin;
-        tabComplete = new HashMap<>();
+        this.tabComplete = new HashMap<>();
     }
 
-    protected void setAliases(String... aliases) {
-        if (aliases != null && (register || aliases.length > 0))
-            setAliases(Arrays.stream(aliases).collect(Collectors.toList()));
+    public Command setDescription(String description) {
+        this.description = description;
+        return null;
     }
 
-    protected void addTabbComplete(int indice, String permission, String[] beforeText, String... arg) {
-        if (arg != null && arg.length > 0 && indice >= 0) {
-            if (tabComplete.containsKey(indice)) {
-                tabComplete.get(indice).addAll(Arrays.stream(arg).collect(
-                        ArrayList::new,
-                        (tabCommands, s) -> tabCommands.add(new TabCommand(indice, s, permission, beforeText)),
-                        ArrayList::addAll));
-            }else {
-                tabComplete.put(indice, Arrays.stream(arg).collect(
-                        ArrayList::new,
-                        (tabCommands, s) -> tabCommands.add(new TabCommand(indice, s, permission, beforeText)),
-                        ArrayList::addAll)
-                );
-            }
-        }
-    }
-
-    protected void addTabbComplete(int indice, String... arg) {
-        addTabbComplete(indice, null, null, arg);
-    }
-
-    protected boolean registerCommand() {
-        if (!register) {
-            register = commandMap.register(plugin.getName(), this);
-        }
-        return register;
+    public String getDescription() {
+        return description;
     }
 
     @Override
@@ -80,65 +57,80 @@ public abstract class CommandManager<T extends JavaPlugin> extends Command imple
         return this.plugin;
     }
 
-    public HashMap<Integer, ArrayList<TabCommand>> getTabComplete() {
-        return tabComplete;
-    }
-
     @Override
-    public boolean execute(CommandSender commandSender, String command, String[] arg) {
-        if (getPermission() != null) {
-            if (!commandSender.hasPermission(getPermission())) {
-                if (getPermissionMessage() == null) {
-                    commandSender.sendMessage(ChatColor.RED + "�ERROR!");
-                }else {
-                    commandSender.sendMessage(getPermissionMessage());
-                }
-                return false;
-            }
+    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+        if (getPermission() != null && !sender.hasPermission(getPermission())) {
+            sender.sendMessage(getPermissionMessage() != null ? getPermissionMessage() : ChatColor.RED + "You do not have permission to use this command.");
+            return true; // Indicate that the command was handled (permission denied)
         }
-        if (onCommand(commandSender, this, command, arg))
-            return true;
-        commandSender.sendMessage(ChatColor.RED + getUsage());
-        return false;
-
+        return onCommand(sender, this, commandLabel, args);
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
+        int index = args.length - 1;
 
-        int indice = args.length - 1;
-
-        if ((getPermission() != null && !sender.hasPermission(getPermission())) || tabComplete.size() == 0 || !tabComplete.containsKey(indice))
+        if ((getPermission() != null && !sender.hasPermission(getPermission())) || tabComplete.isEmpty() || !tabComplete.containsKey(index)) {
             return super.tabComplete(sender, alias, args);
+        }
 
-        List<String> list = tabComplete.get(indice).stream()
-                .filter(tabCommand -> tabCommand.getTextAvant() == null || tabCommand.getTextAvant().contains(args[indice - 1]))
-                .filter(tabCommand -> tabCommand.getPermission() == null || sender.hasPermission(tabCommand.getPermission()))
-                .filter(tabCommand -> tabCommand.getText().startsWith(args[indice]))
+        String currentArg = args[index].toLowerCase();
+        String previousArg = (index > 0) ? args[index - 1].toLowerCase() : null;
+
+        return tabComplete.get(index).stream()
+                .filter(tab -> tab.getRequiredPreviousArgument() == null || (previousArg != null && tab.getRequiredPreviousArgument().contains(previousArg)))
+                .filter(tab -> tab.getText().toLowerCase().startsWith(currentArg))
+                .filter(tab -> tab.getPermission() == null || sender.hasPermission(tab.getPermission()))
                 .map(TabCommand::getText)
                 .sorted(String.CASE_INSENSITIVE_ORDER)
                 .collect(Collectors.toList());
+    }
 
-        return list.size() < 1 ? super.tabComplete(sender, alias, args) : list;
+    protected void setAliases(String... aliases) {
+        if (aliases != null && aliases.length > 0) {
+            setAliases(Arrays.asList(aliases));
+        }
+    }
 
+    protected void addTabSimple(int index, String... suggestions) {
+        addTabWithContext(index, null, null, suggestions);
+    }
+
+    protected void addTabWithPermission(int index, String permission, String... suggestions) {
+        addTabWithContext(index, permission, null, suggestions);
+    }
+
+    protected void addTabWithContext(int index, String permission, String requiredPreviousArgument, String... suggestions) {
+        if (suggestions != null && suggestions.length > 0 && index >= 0) {
+            tabComplete.computeIfAbsent(index, k -> new ArrayList<>())
+                    .addAll(Arrays.stream(suggestions)
+                            .map(s -> new TabCommand(s, permission, requiredPreviousArgument))
+                            .collect(Collectors.toList()));
+        }
+    }
+
+    protected boolean register() {
+        if (!registered) {
+            if (commandMap.register(plugin.getName(), this)) {
+                registered = true;
+                return true;
+            } else {
+                plugin.getLogger().warning("Failed to register command: " + getName());
+                return false;
+            }
+        }
+        return true;
     }
 
     private static class TabCommand {
-
         private final String text;
         private final String permission;
-        private final ArrayList<String> textAvant;
+        private final String requiredPreviousArgument;
 
-        private TabCommand(int indice, String text, String permission, String... textAvant) {
+        public TabCommand(String text, String permission, String requiredPreviousArgument) {
             this.text = text;
             this.permission = permission;
-            if (textAvant == null || textAvant.length < 1) {
-                this.textAvant = null;
-            }else {
-                this.textAvant = Arrays.stream(textAvant).collect(ArrayList::new,
-                        ArrayList::add,
-                        ArrayList::addAll);
-            }
+            this.requiredPreviousArgument = requiredPreviousArgument;
         }
 
         public String getText() {
@@ -149,8 +141,13 @@ public abstract class CommandManager<T extends JavaPlugin> extends Command imple
             return permission;
         }
 
-        public ArrayList<String> getTextAvant() {
-            return textAvant;
+        public String getRequiredPreviousArgument() {
+            return requiredPreviousArgument;
         }
     }
+
+    public abstract boolean onCommand(CommandSender sender, Command command, String label, String[] args);
+
+    @Override
+    public abstract String getUsage();
 }
