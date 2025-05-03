@@ -34,6 +34,7 @@ public class TitleAuth  extends JavaPlugin {
     private Set<UUID> SecurePlayerRegister = Sets.newHashSet();
     private Set<UUID> SecurePlayerLogin = Sets.newHashSet();
     private Map<String, BukkitTask> cancelac = new HashMap<>();
+    private Map<String, BukkitTask> cancelboss = new HashMap<>();
 
     private int pluginId;
 
@@ -85,6 +86,10 @@ public class TitleAuth  extends JavaPlugin {
 
     public Map<String, BukkitTask> cancelAc() {
         return cancelac;
+    }
+
+    public Map<String, BukkitTask> cancelBoss() {
+        return cancelboss;
     }
 
     public int getResourceId() {

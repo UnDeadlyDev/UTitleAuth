@@ -1,5 +1,6 @@
 package com.undeadlydev.UTitleAuth.listeners;
 
+import com.undeadlydev.UTitleAuth.enums.Versions;
 import com.undeadlydev.UTitleAuth.utils.BossBarUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -36,6 +37,9 @@ public class GeneralListeners implements Listener {
 
 	@EventHandler
 	public void onPlayerMoveEvent(PlayerMoveEvent e) {
+		if (Versions.getVersion().esMayorIgual(Versions.v1_9)) {
+			return;
+		}
 		Player player = e.getPlayer();
 		Location to = e.getTo();
 		Location from = e.getFrom();
@@ -54,6 +58,10 @@ public class GeneralListeners implements Listener {
 		}
 		if (plugin.cancelAc().containsKey(p.getName())){
 			plugin.cancelAc().remove(p.getName());
+		}
+		if (plugin.cancelBoss().containsKey(p.getName())){
+			plugin.cancelBoss().remove(p.getName());
+			plugin.getBM().removeBar(p);
 		}
 	}
 }

@@ -1,18 +1,24 @@
 package com.undeadlydev.UTitleAuth.managers;
 
+import com.cryptomorin.xseries.messages.ActionBar;
 import com.cryptomorin.xseries.reflection.XReflection;
 import com.undeadlydev.UTitleAuth.TitleAuth;
+import com.undeadlydev.UTitleAuth.enums.Versions;
 import com.undeadlydev.UTitleAuth.utils.BossBarUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class BossBarManager {
 
@@ -28,7 +34,7 @@ public class BossBarManager {
                     cancel();
                     return;
                 }
-                if (!plugin.cancelAc().containsKey(player.getName())) {
+                if (!plugin.cancelBoss().containsKey(player.getName())) {
                     cancel();
                     return;
                 }
@@ -40,7 +46,7 @@ public class BossBarManager {
                 time--;
             }
         }).runTaskTimer(plugin, 0L, 20L);
-        plugin.cancelAc().put(player.getName(), bukkitTask);
+        plugin.cancelBoss().put(player.getName(), bukkitTask);
     }
 
     public void sendBossNoLogin(Player player) {
@@ -51,7 +57,7 @@ public class BossBarManager {
                     cancel();
                     return;
                 }
-                if (!plugin.cancelAc().containsKey(player.getName())) {
+                if (!plugin.cancelBoss().containsKey(player.getName())) {
                     cancel();
                     return;
                 }
@@ -63,44 +69,34 @@ public class BossBarManager {
                 time--;
             }
         }).runTaskTimer(plugin, 0L, 20L);
-        plugin.cancelAc().put(player.getName(), bukkitTask);
+        plugin.cancelBoss().put(player.getName(), bukkitTask);
     }
 
     public void sendBossOnRegister(Player player) {
-        BossBar bossBar = bossBars.get(player);
+        removeBar(player);
         sendBossBar(player, plugin.getLang().get(player, "bossbar.register"));
         int timeStay = plugin.getConfig().getInt("config.bossbar.register.time.stay");
-        if (bossBar != null) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                removeBossBar(player);
-            }, timeStay * 20L);
-        }
+        removeBossBar(player, timeStay);
     }
 
     public void sendBossOnPremium(Player player) {
-        BossBar bossBar = bossBars.get(player);
+        removeBar(player);
         sendBossBar(player, plugin.getLang().get(player, "bossbar.autologin"));
         int timeStay = plugin.getConfig().getInt("config.bossbar.autologin.time.stay");
-        if (bossBar != null) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                removeBossBar(player);
-            }, timeStay * 20L);
-        }
+        removeBossBar(player, timeStay);
+
     }
 
     public void sendBossOnLogin(Player player) {
-        BossBar bossBar = bossBars.get(player);
+        removeBar(player);
         sendBossBar(player, plugin.getLang().get(player, "bossbar.login"));
         int timeStay = plugin.getConfig().getInt("config.bossbar.login.time.stay");
-        if (bossBar != null) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                removeBossBar(player);
-            }, timeStay * 20);
-        }
+        removeBossBar(player, timeStay);
+
     }
 
     public void sendBossBar(Player player, String msg) {
-        if (XReflection.supports(9)) {
+        if (Versions.getVersion().esMayorIgual(Versions.v1_9)) {
             BossBar bossBarNew = bossBars.get(player);
 
             if (bossBarNew == null) {
@@ -113,7 +109,6 @@ public class BossBarManager {
                 BossBarUtils.addBossBar(player, msg, 100.0F);
             }
             BossBarUtils.updateTitle(player, msg);
-
         }
     }
 
@@ -128,14 +123,25 @@ public class BossBarManager {
         return bossBar;
     }
 
-    public void removeBossBar(Player player) {
-        if (XReflection.supports(9)) {
+    public void removeBar(Player player) {
+        if (Versions.getVersion().esMayorIgual(Versions.v1_9)) {
             BossBar bossBar = bossBars.remove(player);
             if (bossBar != null) {
                 bossBar.removePlayer(player);
             }
         } else {
             BossBarUtils.removeBossBar(player);
+        }
+    }
+
+    private void removeBossBar(final @NotNull Player player, final long duration) {
+        if (duration >= 1L) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    removeBar(player);
+                }
+            }.runTaskLaterAsynchronously(plugin, duration * 20);
         }
     }
 }
