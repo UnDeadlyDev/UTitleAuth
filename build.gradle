@@ -37,14 +37,13 @@ dependencies {
 
     compileOnly 'fr.xephi:authme:5.6.1-SNAPSHOT'
 
+    compileOnly files('libs/FastLoginBukkit.jar')
+    compileOnly files('libs/CMILib.jar')
     // https://github.com/Bastian/bstats-metrics
     implementation 'org.bstats:bstats-bukkit:3.1.0'
 
     // https://github.com/CryptoMorin/XSeries
     implementation 'com.github.cryptomorin:XSeries:13.3.3'
-
-    implementation files('libs/FastLoginBukkit.jar')
-    implementation files('libs/CMILib.jar')
 }
 
 shadowJar {
@@ -54,17 +53,23 @@ shadowJar {
     relocate 'org.bstats', path +'.bstats'
     relocate 'com.cryptomorin.xseries', path +'.xseries'
 
-    exclude 'com/cryptomorin/xseries/SkullCacheListener*'
-    exclude 'com/cryptomorin/xseries/NoteBlockMusic*'
-    exclude 'com/cryptomorin/xseries/NMSExtras*'
-
-    exclude 'com/cryptomorin/xseries/ReflectionUtils*'
-    exclude 'com/cryptomorin/xseries/particles/**'
     exclude 'com/cryptomorin/xseries/XBiome*'
+    exclude 'com/cryptomorin/xseries/NMSExtras*'
+    exclude 'com/cryptomorin/xseries/NoteBlockMusic*'
+    exclude 'com/cryptomorin/xseries/SkullCacheListener*'
+    exclude 'com/cryptomorin/xseries/particles*'
     exclude 'com/cryptomorin/xseries/XBlock*'
     exclude 'com/cryptomorin/xseries/XItemStack*'
     exclude 'com/cryptomorin/xseries/XTag*'
     exclude 'com/cryptomorin/xseries/XWorldBorder*'
+    exclude 'com/cryptomorin/xseries/XPotion*'
+    exclude 'com/cryptomorin/xseries/XAttribute*'
+    exclude 'com/cryptomorin/xseries/XEnchantment*'
+    exclude 'com/cryptomorin/xseries/XEntity*'
+    exclude 'com/cryptomorin/xseries/XItemFlag*'
+    exclude 'com/cryptomorin/xseries/XMaterial*'
+    exclude 'com/cryptomorin/xseries/XPatternType*'
+    exclude 'com/cryptomorin/xseries/XSound*'
     exclude 'META-INF/**'
 
 }
