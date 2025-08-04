@@ -1,0 +1,92 @@
+plugins {
+    id 'java'
+    // https://github.com/GradleUp/shadow
+    id 'com.gradleup.shadow' version '8.3.8'
+    // https://github.com/Minecrell/plugin-yml
+    id 'net.minecrell.plugin-yml.bukkit' version '0.6.0'
+}
+
+group 'com.undeadlydev'
+version '1.7.6'
+
+bukkit {
+    name = 'UTitleAuth'
+    main = 'com.undeadlydev.UTA.Main'
+    version = project.version
+    apiVersion = '1.13'
+    author = 'UnDeadlyDev'
+    depend = ['AuthMe']
+    softDepend = ['PlaceholderAPI', 'CMILib' 'FastLogin']
+}
+
+repositories {
+    mavenCentral()
+
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://hub.spigotmc.org/nexus/content/groups/public/' }
+    maven { url "https://maven.enginehub.org/repo/" }
+    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+}
+
+dependencies {
+    // https://hub.spigotmc.org/stash/projects/SPIGOT/repos/spigot/browse
+    compileOnly 'org.spigotmc:spigot-api:1.21.8-R0.1-SNAPSHOT'
+
+    // https://github.com/PlaceholderAPI/PlaceholderAPI
+    compileOnly 'me.clip:placeholderapi:2.11.6'
+
+    // https://github.com/brettwooldridge/HikariCP
+    implementation('com.zaxxer:HikariCP:6.3.0') {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+        exclude group: 'org.slf4j', module: 'slf4j-simple'
+    }
+
+    // https://github.com/Bastian/bstats-metrics
+    implementation 'org.bstats:bstats-bukkit:3.1.0'
+
+    // https://github.com/CryptoMorin/XSeries
+    implementation 'com.github.cryptomorin:XSeries:13.3.3'
+
+    // https://github.com/MrMicky-FR/FastBoard
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.14'
+}
+
+shadowJar {
+    archiveFileName = "${rootProject.name}-${version}.jar"
+
+    def path = 'libraries'
+    relocate 'com.zaxxer.hikari', path +'.hikari'
+    relocate 'org.bstats', path +'.bstats'
+    relocate 'com.cryptomorin.xseries', path +'.xseries'
+
+    exclude 'com/cryptomorin/xseries/SkullCacheListener*'
+    exclude 'com/cryptomorin/xseries/NoteBlockMusic*'
+    exclude 'com/cryptomorin/xseries/NMSExtras*'
+
+    exclude 'com/cryptomorin/xseries/ReflectionUtils*'
+    exclude 'com/cryptomorin/xseries/particles/**'
+    exclude 'com/cryptomorin/xseries/XBiome*'
+    exclude 'com/cryptomorin/xseries/XBlock*'
+    exclude 'com/cryptomorin/xseries/XItemStack*'
+    exclude 'com/cryptomorin/xseries/XTag*'
+    exclude 'com/cryptomorin/xseries/XWorldBorder*'
+    exclude 'META-INF/**'
+
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
+}
+
+processResources {
+    inputs.property('version', project.version)
+}
+
+build.dependsOn shadowJar
