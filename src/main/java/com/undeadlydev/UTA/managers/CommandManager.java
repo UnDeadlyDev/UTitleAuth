@@ -147,7 +147,4 @@ public abstract class CommandManager<T extends JavaPlugin> extends Command imple
     }
 
     public abstract boolean onCommand(CommandSender sender, Command command, String label, String[] args);
-
-    @Override
-    public abstract String getUsage();
 }

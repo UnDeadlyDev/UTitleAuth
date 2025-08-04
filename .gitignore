@@ -40,3 +40,5 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+libs/FastLoginBukkit.jar
+libs/CMILib.jar

@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'com.undeadlydev'
-version '1.7.6'
+version '8.2.3'
 
 bukkit {
     name = 'UTitleAuth'
@@ -16,14 +16,16 @@ bukkit {
     apiVersion = '1.13'
     author = 'UnDeadlyDev'
     depend = ['AuthMe']
-    softDepend = ['PlaceholderAPI', 'CMILib' 'FastLogin']
+    softDepend = ['PlaceholderAPI', 'CMILib', 'FastLogin']
 }
 
 repositories {
     mavenCentral()
 
     maven { url 'https://hub.spigotmc.org/nexus/content/groups/public/' }
+    maven { url "https://maven.enginehub.org/repo/" }
     maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    maven { url 'https://repo.codemc.io/repository/maven-snapshots/' }
 }
 
 dependencies {
@@ -33,11 +35,16 @@ dependencies {
     // https://github.com/PlaceholderAPI/PlaceholderAPI
     compileOnly 'me.clip:placeholderapi:2.11.6'
 
+    compileOnly 'fr.xephi:authme:5.6.1-SNAPSHOT'
+
     // https://github.com/Bastian/bstats-metrics
     implementation 'org.bstats:bstats-bukkit:3.1.0'
 
     // https://github.com/CryptoMorin/XSeries
     implementation 'com.github.cryptomorin:XSeries:13.3.3'
+
+    implementation files('libs/FastLoginBukkit.jar')
+    implementation files('libs/CMILib.jar')
 }
 
 shadowJar {

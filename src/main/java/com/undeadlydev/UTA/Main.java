@@ -118,7 +118,6 @@ public class Main extends JavaPlugin {
         wm = new WelcomeMessageManager();
         new utitleauthCMD(this);
         adm.reload();
-        loadHooks();
         pm.registerEvents(new GeneralListeners(this), this);
         pm.registerEvents(new LoginListener(this), this);
         pm.registerEvents(new LogoutListener(this), this);
@@ -137,15 +136,6 @@ public class Main extends JavaPlugin {
         sendLogMessage("&7-----------------------------------");
         loadMetrics();
         CheckUpdate();
-    }
-
-    public void loadHooks() {
-        if (Bukkit.getPluginManager().isPluginEnabled("AuthMe")) {
-            sendLogMessage("&fPlugin &aAuthMe &aHooked Successfully!");
-    	} else {
-            sendLogMessage("&fPlugin &cAuthMe &cHooked not found!");
-	    	Bukkit.getPluginManager().disablePlugin(this);
-    	}
     }
     
     public void onDisable() {

@@ -76,11 +76,6 @@ public class utitleauthCMD extends CommandManager<Main> {
 		return true;
     }
 
-    @Override
-    public String getUsage() {
-        return "";
-    }
-
     private void sendHelp(CommandSender s) {
         s.sendMessage(HexUtils.colorify("&e[UTitleAuth] " + "&c&lAdmin Commands."));
         s.sendMessage(HexUtils.colorify("&e[UTitleAuth] " + "&e/utitleauth reload &7(Reload all configs)"));
