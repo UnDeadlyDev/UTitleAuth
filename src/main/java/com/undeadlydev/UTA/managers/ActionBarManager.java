@@ -2,7 +2,6 @@ package com.undeadlydev.UTA.managers;
 
 import com.cryptomorin.xseries.messages.ActionBar;
 import com.undeadlydev.UTA.Main;
-import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -62,18 +61,18 @@ public class ActionBarManager {
     public void sendAcOnPremium(Player player) {
         String message = plugin.getLang().get(player, "actionbar.autologin");
         ActionBar.clearActionBar(player);
-        ActionBar.sendActionBar(plugin , player, message);
+        ActionBar.sendActionBar(plugin, player, message);
     }
 
     public void sendAcOnRegister(Player player) {
         String message = plugin.getLang().get(player, "actionbar.register");
         ActionBar.clearActionBar(player);
-        ActionBar.sendActionBar(plugin , player, message);
+        ActionBar.sendActionBar(plugin, player, message);
     }
 
     public void sendAcOnLogin(Player player) {
         String message = plugin.getLang().get(player, "actionbar.login");
         ActionBar.clearActionBar(player);
-        ActionBar.sendActionBar(plugin , player, message);
+        ActionBar.sendActionBar(plugin, player, message);
     }
 }

@@ -39,6 +39,7 @@ dependencies {
 
     compileOnly files('libs/FastLoginBukkit.jar')
     compileOnly files('libs/CMILib.jar')
+
     // https://github.com/Bastian/bstats-metrics
     implementation 'org.bstats:bstats-bukkit:3.1.0'
 
