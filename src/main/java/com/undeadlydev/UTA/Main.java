@@ -112,10 +112,10 @@ public class Main extends JavaPlugin {
         saveConfig();
         lang = new FileManager("lang", true);
         adm = new AddonManager();
-        tm = new TitlesManager();
-        ac = new ActionBarManager();
-        bm = new BossBarManager();
-        wm = new WelcomeMessageManager();
+        tm = new TitlesManager(this);
+        ac = new ActionBarManager(this);
+        bm = new BossBarManager(this);
+        wm = new WelcomeMessageManager(this);
         new utitleauthCMD(this);
         adm.reload();
         pm.registerEvents(new GeneralListeners(this), this);

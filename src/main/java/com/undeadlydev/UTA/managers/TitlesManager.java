@@ -7,7 +7,11 @@ import org.bukkit.entity.Player;
 
 public class TitlesManager {
 
-    Main plugin = Main.get();
+    private final Main plugin;
+
+    public TitlesManager(Main plugin) {
+        this.plugin = plugin;
+    }
 
     public void sendTitlePremium(Player player) {
         String Title = plugin.getLang().get(player, "titles.autologin.title");
@@ -42,10 +46,7 @@ public class TitlesManager {
         if (plugin.getAdm().getCMIAddon()) {
             CMITitleMessage.send(player, Title, subTitle, 0, 999999999, 20);
         } else {
-            int fadeIn = (0);
-            int stay = (999999999);
-            int fadeOut = (20);
-            Titles.sendTitle(player, fadeIn, stay, fadeOut, Title, subTitle);
+            Titles.sendTitle(player, 0, 999999999, 20, Title, subTitle);
         }
     }
 
@@ -57,6 +58,7 @@ public class TitlesManager {
         int stay = plugin.getConfig().getInt("config.titles.register.time.stay");
         int fadeOut = plugin.getConfig().getInt("config.titles.register.time.fadeout");
         if (plugin.getAdm().getCMIAddon()) {
+            //CMITitleMessage.send(player, "", "", 0,0,0);
             CMITitleMessage.send(player, Title, subTitle, fadeIn, stay, fadeOut);
         } else {
             Titles.clearTitle(player);

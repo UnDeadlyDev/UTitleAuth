@@ -1,7 +1,5 @@
 package com.undeadlydev.UTA.managers;
 
-import com.cryptomorin.xseries.messages.ActionBar;
-import com.cryptomorin.xseries.reflection.XReflection;
 import com.undeadlydev.UTA.Main;
 import com.undeadlydev.UTA.enums.Versions;
 import com.undeadlydev.UTA.utils.BossBarUtils;
@@ -10,18 +8,20 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class BossBarManager {
 
-    Main plugin = Main.get();
+    private final Main plugin;
+
+    public BossBarManager(Main plugin) {
+        this.plugin = plugin;
+    }
 
     private final Map<Player, BossBar> bossBars = new HashMap<>();
 

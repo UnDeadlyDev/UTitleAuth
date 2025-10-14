@@ -8,7 +8,11 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class ActionBarManager {
 
-    Main plugin = Main.get();
+    private final Main plugin;
+
+    public ActionBarManager(Main plugin) {
+        this.plugin = plugin;
+    }
 
     public void sendAcNoRegister(Player player) {
         BukkitTask bukkitTask = (new BukkitRunnable() {

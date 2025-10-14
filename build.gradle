@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'com.undeadlydev'
-version '8.2.5'
+version '8.3.0'
 
 bukkit {
     name = 'UTitleAuth'
@@ -20,12 +20,16 @@ bukkit {
 }
 
 repositories {
-    mavenCentral()
-
-    maven { url 'https://hub.spigotmc.org/nexus/content/groups/public/' }
-    maven { url "https://maven.enginehub.org/repo/" }
-    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
-    maven { url 'https://repo.codemc.io/repository/maven-snapshots/' }
+    mavenLocal()
+    // mavenCentral()
+    // Instead of real maven central we use the maven mirror Paper uses, to ensure all the dependencies we want will
+    // also be available to the library loader.
+    maven { url = 'https://maven-central.storage-download.googleapis.com/maven2' }
+    maven { url = 'https://hub.spigotmc.org/nexus/content/groups/public/' }
+    maven { url = 'https://maven.enginehub.org/repo/'}
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    maven { url = 'https://repo.codemc.io/repository/maven-snapshots/' }
+    maven { url = 'https://jitpack.io' }
 }
 
 dependencies {
@@ -41,16 +45,17 @@ dependencies {
     implementation 'org.bstats:bstats-bukkit:3.1.0'
 
     // https://github.com/CryptoMorin/XSeries
-    implementation 'com.github.cryptomorin:XSeries:13.3.2'
+    implementation 'com.github.cryptomorin:XSeries:13.5.1'
 
     compileOnly files('libs/FastLoginBukkit.jar')
-    compileOnly files('libs/CMILib1.5.6.3.jar')
+    compileOnly files('libs/CMILib1.5.6.9.jar')
 }
 
 shadowJar {
     archiveFileName = "${rootProject.name}-${version}.jar"
 
     def path = 'com.undeadlydev.UTA.libraries'
+
     relocate 'org.bstats', path +'.bstats'
     relocate 'com.cryptomorin.xseries', path +'.xseries'
 }

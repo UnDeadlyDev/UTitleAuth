@@ -6,7 +6,11 @@ import org.bukkit.entity.Player;
 
 public class WelcomeMessageManager {
 
-    Main plugin = Main.get();
+    private final Main plugin;
+
+    public WelcomeMessageManager(Main plugin) {
+        this.plugin = plugin;
+    }
 
     public void sendWOnLogin(Player player) {
         String mesage = plugin.getLang().get(player, "message.welcome.login");

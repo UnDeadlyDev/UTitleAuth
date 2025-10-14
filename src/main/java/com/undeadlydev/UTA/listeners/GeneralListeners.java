@@ -13,7 +13,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.undeadlydev.UTA.Main;
 
-
 public class GeneralListeners implements Listener {
 
 	private Main plugin;
@@ -21,7 +20,6 @@ public class GeneralListeners implements Listener {
 	public GeneralListeners(Main plugin) {
 		this.plugin = plugin;
 	}
-
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnDisconnect(PlayerQuitEvent e) {
