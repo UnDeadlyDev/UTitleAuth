@@ -1,5 +1,6 @@
 package com.undeadlydev.UTA.managers;
 
+import com.tcoded.folialib.wrapper.task.WrappedTask;
 import com.undeadlydev.UTA.Main;
 import com.undeadlydev.UTA.enums.Versions;
 import com.undeadlydev.UTA.utils.BossBarUtils;
@@ -8,8 +9,6 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -23,52 +22,39 @@ public class BossBarManager {
         this.plugin = plugin;
     }
 
+    public void stopTask(Player player) {
+        WrappedTask task = plugin.cancelBoss().remove(player.getName());
+        if (task != null) {
+            task.cancel();
+        }
+    }
+
     private final Map<Player, BossBar> bossBars = new HashMap<>();
 
     public void sendBossNoRegister(Player player) {
-        BukkitTask bukkitTask = (new BukkitRunnable() {
-            int time = Main.getOtherConfig().getInt("settings.restrictions.timeout");
-            public void run() {
-                if (!plugin.getRegisterSecure().contains(player.getUniqueId())) {
-                    cancel();
-                    return;
-                }
-                if (!plugin.cancelBoss().containsKey(player.getName())) {
-                    cancel();
-                    return;
-                }
-                if (time <= 0) {
-                    cancel();
-                    return;
-                }
-                sendBossBar(player, plugin.getLang().get(player, "bossbar.noregister").replace("<time>", String.valueOf(time)));
-                time--;
+        final int[] time = {Main.getOtherConfig().getInt("settings.restrictions.timeout")};
+        WrappedTask task = plugin.getScheduler().runAtEntityTimer(player, () -> {
+            if (!plugin.getRegisterSecure().contains(player.getUniqueId()) || !plugin.cancelBoss().containsKey(player.getName()) || time[0] <= 0) {
+                stopTask(player);
+                return;
             }
-        }).runTaskTimer(plugin, 0L, 20L);
-        plugin.cancelBoss().put(player.getName(), bukkitTask);
+            sendBossBar(player, plugin.getLang().get(player, "bossbar.noregister").replace("<time>", String.valueOf(time[0])));
+            time[0]--;
+        }, 0L, 20L);
+        plugin.cancelBoss().put(player.getName(), task);
     }
 
     public void sendBossNoLogin(Player player) {
-        BukkitTask bukkitTask = (new BukkitRunnable() {
-            int time = Main.getOtherConfig().getInt("settings.restrictions.timeout");
-            public void run() {
-                if (!plugin.getLoginSecure().contains(player.getUniqueId())) {
-                    cancel();
-                    return;
-                }
-                if (!plugin.cancelBoss().containsKey(player.getName())) {
-                    cancel();
-                    return;
-                }
-                if (time <= 0) {
-                    cancel();
-                    return;
-                }
-                sendBossBar(player, plugin.getLang().get(player, "bossbar.nologin").replace("<time>", String.valueOf(time)));
-                time--;
+        final int[] time = {Main.getOtherConfig().getInt("settings.restrictions.timeout")};
+        WrappedTask task = plugin.getScheduler().runAtEntityTimer(player, () -> {
+            if (!plugin.getLoginSecure().contains(player.getUniqueId()) || !plugin.cancelBoss().containsKey(player.getName()) || time[0] <= 0) {
+                stopTask(player);
+                return;
             }
-        }).runTaskTimer(plugin, 0L, 20L);
-        plugin.cancelBoss().put(player.getName(), bukkitTask);
+            sendBossBar(player, plugin.getLang().get(player, "bossbar.nologin").replace("<time>", String.valueOf(time[0])));
+            time[0]--;
+        }, 0L, 20L);
+        plugin.cancelBoss().put(player.getName(), task);
     }
 
     public void sendBossOnRegister(Player player) {
@@ -83,7 +69,6 @@ public class BossBarManager {
         sendBossBar(player, plugin.getLang().get(player, "bossbar.autologin"));
         int timeStay = plugin.getConfig().getInt("config.bossbar.autologin.time.stay");
         removeBossBar(player, timeStay);
-
     }
 
     public void sendBossOnLogin(Player player) {
@@ -91,7 +76,6 @@ public class BossBarManager {
         sendBossBar(player, plugin.getLang().get(player, "bossbar.login"));
         int timeStay = plugin.getConfig().getInt("config.bossbar.login.time.stay");
         removeBossBar(player, timeStay);
-
     }
 
     public void sendBossBar(Player player, String msg) {
@@ -135,12 +119,9 @@ public class BossBarManager {
 
     private void removeBossBar(final @NotNull Player player, final long duration) {
         if (duration >= 1L) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    removeBar(player);
-                }
-            }.runTaskLaterAsynchronously(plugin, duration * 20);
+            plugin.getScheduler().runAtEntityLater(player, (task) -> {
+                removeBar(player);
+            }, duration * 20);
         }
     }
 }

@@ -16,14 +16,14 @@ public class LogoutListener implements Listener {
 
     @EventHandler
     public void OnLogoutPlayer(LogoutEvent event) {
-        Player p = event.getPlayer();
-        plugin.addLoginSecure(p);
-        plugin.getTm().sendTitleNoLogin(p);
+        Player player = event.getPlayer();
+        plugin.addLoginSecure(player);
+        plugin.getTm().sendTitleNoLogin(player);
         if (plugin.getConfig().getBoolean("config.actionbar.enabled")) {
-            plugin.getAcM().sendAcNoLogin(p);
+            plugin.getAcM().sendAcNoLogin(player);
         }
         if (plugin.getConfig().getBoolean("config.bossbar.enabled")) {
-            plugin.getBM().sendBossNoLogin(p);
+            plugin.getBM().sendBossNoLogin(player);
         }
     }
 }

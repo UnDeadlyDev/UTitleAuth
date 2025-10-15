@@ -46,6 +46,8 @@ config:
     autologin:
       time: #This is time of stay message in seconds.
         stay: 5
+  xpcountdownanimation:
+    enabled: true
   message:
     welcome:
       onjoin:

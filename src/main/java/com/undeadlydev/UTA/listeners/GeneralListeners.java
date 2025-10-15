@@ -23,14 +23,12 @@ public class GeneralListeners implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnDisconnect(PlayerQuitEvent e) {
-		Player p = e.getPlayer();
-		remove(p);
+		remove(e.getPlayer());
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnKick(PlayerKickEvent e) {
-		Player p = e.getPlayer();
-		remove(p);
+		remove(e.getPlayer());
 	}
 
 	@EventHandler

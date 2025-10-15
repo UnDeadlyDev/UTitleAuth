@@ -1,6 +1,9 @@
 package com.undeadlydev.UTA;
 
 import com.google.common.collect.Sets;
+import com.tcoded.folialib.FoliaLib;
+import com.tcoded.folialib.impl.PlatformScheduler;
+import com.tcoded.folialib.wrapper.task.WrappedTask;
 import com.undeadlydev.UTA.managers.*;
 import com.undeadlydev.UTA.listeners.*;
 import com.undeadlydev.UTA.superclass.SpigotUpdater;
@@ -10,6 +13,7 @@ import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,19 +26,24 @@ import java.util.*;
 
 public class Main extends JavaPlugin {
 
-	private static Main instance;
+    private static Main instance;
 
     private AddonManager adm;
     private TitlesManager tm;
     private ActionBarManager ac;
     private BossBarManager bm;
     private WelcomeMessageManager wm;
+    private LevelManager lm;
+
     private FileManager lang;
 
-    private Set<UUID> SecurePlayerRegister = Sets.newHashSet();
-    private Set<UUID> SecurePlayerLogin = Sets.newHashSet();
-    private Map<String, BukkitTask> cancelac = new HashMap<>();
-    private Map<String, BukkitTask> cancelboss = new HashMap<>();
+    private final Set<UUID> SecurePlayerRegister = Sets.newHashSet();
+    private final Set<UUID> SecurePlayerLogin = Sets.newHashSet();
+    private final Map<String, WrappedTask> cancelac = new HashMap<>();
+    private final Map<String, WrappedTask> cancelboss = new HashMap<>();
+    private final Map<UUID, LevelManager> levelManagers = new HashMap<>();
+
+    private final FoliaLib foliaLib;
 
     private int pluginId;
 
@@ -84,16 +93,28 @@ public class Main extends JavaPlugin {
         return wm;
     }
 
-    public Map<String, BukkitTask> cancelAc() {
+    public LevelManager getLm() {
+        return lm;
+    }
+
+    public Map<String, WrappedTask> cancelAc() {
         return cancelac;
     }
 
-    public Map<String, BukkitTask> cancelBoss() {
+    public Map<String, WrappedTask> cancelBoss() {
         return cancelboss;
+    }
+
+    public Map<UUID, LevelManager> getLevelManagers() {
+        return levelManagers;
     }
 
     public int getResourceId() {
         return resourceId;
+    }
+
+    public PlatformScheduler getScheduler() {
+        return foliaLib.getScheduler();
     }
 
     public static FileConfiguration getOtherConfig() {
@@ -101,13 +122,16 @@ public class Main extends JavaPlugin {
         FileConfiguration config = p.getConfig();
         return config;
     }
-    
+
+    public Main() {
+        foliaLib = new FoliaLib(this);
+    }
+
     public void onEnable() {
         instance = this;
         pluginId = 14756;
         resourceId = 88058;
         PluginManager pm = getServer().getPluginManager();
-        sendLogMessage("&7-----------------------------------");
         getConfig().options().copyDefaults(true);
         saveConfig();
         lang = new FileManager("lang", true);
@@ -116,6 +140,7 @@ public class Main extends JavaPlugin {
         ac = new ActionBarManager(this);
         bm = new BossBarManager(this);
         wm = new WelcomeMessageManager(this);
+        lm = new LevelManager(this);
         new utitleauthCMD(this);
         adm.reload();
         pm.registerEvents(new GeneralListeners(this), this);
@@ -137,8 +162,10 @@ public class Main extends JavaPlugin {
         loadMetrics();
         CheckUpdate();
     }
-    
+
     public void onDisable() {
+        HandlerList.unregisterAll(this);
+        getScheduler().cancelAllTasks();
         sendLogMessage("&7-----------------------------------");
         sendLogMessage(" ");
         sendLogMessage("&fSuccessfully Plugin &cDisable!");
@@ -160,20 +187,17 @@ public class Main extends JavaPlugin {
     }
 
     private void CheckUpdate() {
-        if(getConfig().getBoolean("update-check")) {
-            new BukkitRunnable() {
-                public void run() {
-                    SpigotUpdater updater = new SpigotUpdater(instance, resourceId);
-                    try {
-                        if (updater.checkForUpdates()) {
-                            Bukkit.getConsoleSender().sendMessage(getLang().get("message.notifyUpdate").replace("{CURRENT}", getDescription().getVersion()).replace("{NEW}", updater.getLatestVersion()).replace("{LINK}", updater.getResourceURL()));
-                        }
-                    } catch (Exception e) {
-                        sendLogMessage("Failed to check for a update on spigot.");
+        if (getConfig().getBoolean("update-check")) {
+            getScheduler().runAsync((task) -> {
+                SpigotUpdater updater = new SpigotUpdater(instance, resourceId);
+                try {
+                    if (updater.checkForUpdates()) {
+                        Bukkit.getConsoleSender().sendMessage(getLang().get("message.notifyUpdate").replace("{CURRENT}", getDescription().getVersion()).replace("{NEW}", updater.getLatestVersion()).replace("{LINK}", updater.getResourceURL()));
                     }
+                } catch (Exception e) {
+                    sendLogMessage("Failed to check for a update on spigot.");
                 }
-
-            }.runTask(this);
+            });
         }
     }
 }
