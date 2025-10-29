@@ -34,85 +34,64 @@ public class Main extends JavaPlugin {
     private BossBarManager bm;
     private WelcomeMessageManager wm;
     private LevelManager lm;
-
     private FileManager lang;
-
     private final Set<UUID> SecurePlayerRegister = Sets.newHashSet();
     private final Set<UUID> SecurePlayerLogin = Sets.newHashSet();
     private final Map<String, WrappedTask> cancelac = new HashMap<>();
     private final Map<String, WrappedTask> cancelboss = new HashMap<>();
     private final Map<UUID, LevelManager> levelManagers = new HashMap<>();
-
     private final FoliaLib foliaLib;
-
     private int pluginId;
-
     private int resourceId;
 
     public static Main get() {
         return instance;
     }
-
     public AddonManager getAdm() {
         return adm;
     }
-
     public FileManager getLang() {
         return lang;
     }
-
     public Set<UUID> getRegisterSecure() {
         return SecurePlayerRegister;
     }
-
     public void addRegisterSecure(Player uuid){
         this.SecurePlayerRegister.add(uuid.getUniqueId());
     }
-
     public Set<UUID> getLoginSecure() {
         return SecurePlayerLogin;
     }
-
     public void addLoginSecure(Player uuid){
         this.SecurePlayerLogin.add(uuid.getUniqueId());
     }
-
     public TitlesManager getTm() {
         return tm;
     }
-
     public ActionBarManager getAcM() {
         return ac;
     }
-
     public BossBarManager getBM() {
         return bm;
     }
-
     public WelcomeMessageManager getWm() {
         return wm;
     }
-
     public LevelManager getLm() {
         return lm;
     }
-
     public Map<String, WrappedTask> cancelAc() {
         return cancelac;
     }
-
     public Map<String, WrappedTask> cancelBoss() {
         return cancelboss;
     }
-
     public Map<UUID, LevelManager> getLevelManagers() {
         return levelManagers;
     }
-
     public int getResourceId() {
         return resourceId;
     }
-
     public PlatformScheduler getScheduler() {
         return foliaLib.getScheduler();
     }
