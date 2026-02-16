@@ -8,16 +8,22 @@ addons:
 config:
   titles:
     register:
+      notification:
+        enabled: true
       time: #This is a times of title in ticks.
         fadein: 5
         stay: 30
         fadeout: 5
     login:
+      notification:
+        enabled: true
       time: #This is a times of title in ticks.
         fadein: 5
         stay: 30
         fadeout: 5
     autologin:
+      notification:
+        enabled: true
       time: #This is a times of title in ticks.
         fadein: 5
         stay: 30
@@ -25,25 +31,43 @@ config:
   actionbar:
     enabled: true
     register:
+      notification:
+        enabled: true
       time: #This is time of stay message in seconds.
         stay: 5
     login:
+      notification:
+        enabled: true
       time: #This is time of stay message in seconds.
         stay: 5
     autologin:
+      notification:
+        enabled: true
       time: #This is time of stay message in seconds.
         stay: 5
   bossbar:
     enabled: true
-    color: RED #ONLY WORK IN 1.9 TO UP
-    style: SOLID #ONLY WORK IN 1.9 TO UP
+    color: RED # ONLY WORK IN 1.9 TO UP
+    style: SOLID # ONLY WORK IN 1.9 TO UP
     register:
+      color: RED #ONLY WORK IN 1.9 TO UP
+      style: SOLID #ONLY WORK IN 1.9 TO UP
+      notification:
+        enabled: true
       time: #This is time of stay message in seconds.
         stay: 5
     login:
+      color: RED #ONLY WORK IN 1.9 TO UP
+      style: SOLID #ONLY WORK IN 1.9 TO UP
+      notification:
+        enabled: true
       time: #This is time of stay message in seconds.
         stay: 5
     autologin:
+      color: RED #ONLY WORK IN 1.9 TO UP
+      style: SOLID #ONLY WORK IN 1.9 TO UP
+      notification:
+        enabled: true
       time: #This is time of stay message in seconds.
         stay: 5
   xpcountdownanimation:

@@ -46,21 +46,31 @@ public class ActionBarManager {
     }
 
     public void sendAcOnPremium(Player player) {
-        String message = plugin.getLang().get(player, "actionbar.autologin");
         ActionBar.clearActionBar(player);
+        if (!isAuthNotificationActionBarEnabled(String.valueOf("autologin"))) return;
+
+        String message = plugin.getLang().get(player, "actionbar.autologin");
         ActionBar.sendActionBar(plugin, player, message);
 
     }
 
     public void sendAcOnRegister(Player player) {
-        String message = plugin.getLang().get(player, "actionbar.register");
         ActionBar.clearActionBar(player);
+        if (!isAuthNotificationActionBarEnabled(String.valueOf("register"))) return;
+
+        String message = plugin.getLang().get(player, "actionbar.register");
         ActionBar.sendActionBar(plugin, player, message);
     }
 
     public void sendAcOnLogin(Player player) {
-        String message = plugin.getLang().get(player, "actionbar.login");
         ActionBar.clearActionBar(player);
+        if (!isAuthNotificationActionBarEnabled(String.valueOf("login"))) return;
+
+        String message = plugin.getLang().get(player, "actionbar.login");
         ActionBar.sendActionBar(plugin, player, message);
+    }
+
+    private boolean isAuthNotificationActionBarEnabled(String state) {
+        return plugin.getConfig().getBoolean("config.actionbar."+ state + ".notification.enabled");
     }
 }

@@ -13,20 +13,6 @@ public class TitlesManager {
         this.plugin = plugin;
     }
 
-    public void sendTitlePremium(Player player) {
-        String Title = plugin.getLang().get(player, "titles.autologin.title");
-        String subTitle = plugin.getLang().get(player, "titles.autologin.subtitle");
-
-        int fadeIn = plugin.getConfig().getInt("config.titles.autologin.time.fadein");
-        int stay = plugin.getConfig().getInt("config.titles.autologin.time.stay");
-        int fadeOut = plugin.getConfig().getInt("config.titles.autologin.time.fadeout");
-        if (plugin.getAdm().getCMIAddon()) {
-            CMITitleMessage.send(player, Title, subTitle, fadeIn, stay, fadeOut);
-        } else {
-            Titles.sendTitle(player, fadeIn, stay, fadeOut, Title, subTitle);
-        }
-    }
-
     public void sendTitleNoRegister(Player player) {
         String Title = plugin.getLang().get(player, "titles.noregister.title");
         String subTitle = plugin.getLang().get(player, "titles.noregister.subtitle");
@@ -50,7 +36,27 @@ public class TitlesManager {
         }
     }
 
+    public void sendTitlePremium(Player player) {
+        Titles.clearTitle(player);
+        if (!isAuthNotificationTitleEnabled(String.valueOf("autologin"))) return;
+
+        String Title = plugin.getLang().get(player, "titles.autologin.title");
+        String subTitle = plugin.getLang().get(player, "titles.autologin.subtitle");
+
+        int fadeIn = plugin.getConfig().getInt("config.titles.autologin.time.fadein");
+        int stay = plugin.getConfig().getInt("config.titles.autologin.time.stay");
+        int fadeOut = plugin.getConfig().getInt("config.titles.autologin.time.fadeout");
+        if (plugin.getAdm().getCMIAddon()) {
+            CMITitleMessage.send(player, Title, subTitle, fadeIn, stay, fadeOut);
+        } else {
+            Titles.sendTitle(player, fadeIn, stay, fadeOut, Title, subTitle);
+        }
+    }
+
     public void sendTitleOnRegister(Player player) {
+        Titles.clearTitle(player);
+        if (!isAuthNotificationTitleEnabled(String.valueOf("register"))) return;
+
         String Title = plugin.getLang().get(player, "titles.register.title");
         String subTitle = plugin.getLang().get(player, "titles.register.subtitle");
 
@@ -67,6 +73,9 @@ public class TitlesManager {
     }
 
     public void sendTitleOnLogin(Player player) {
+        Titles.clearTitle(player);
+        if (!isAuthNotificationTitleEnabled(String.valueOf("login"))) return;
+
         String Title = plugin.getLang().get(player, "titles.login.title");
         String subTitle = plugin.getLang().get(player, "titles.login.subtitle");
 
@@ -79,5 +88,9 @@ public class TitlesManager {
             Titles.clearTitle(player);
             Titles.sendTitle(player, fadeIn, stay, fadeOut, Title, subTitle);
         }
+    }
+
+    private boolean isAuthNotificationTitleEnabled(String state) {
+        return plugin.getConfig().getBoolean("config.titles."+ state + ".notification.enabled");
     }
 }
