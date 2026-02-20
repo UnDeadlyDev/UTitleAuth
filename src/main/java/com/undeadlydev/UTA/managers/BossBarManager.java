@@ -33,7 +33,7 @@ public class BossBarManager {
                 return;
             }
             sendBossBar(player,
-                    plugin.getLang().get(player, "bossbar.noregister").replace("<time>", String.valueOf(time[0])), null, null);
+                    plugin.getLang().get(player, "bossbar.noregister").replace("<time>", String.valueOf(time[0])), BarColor.valueOf(plugin.getConfig().getString("config.bossbar.noregister.color")), BarStyle.valueOf(plugin.getConfig().getString("config.bossbar.noregister.style")));
             time[0]--;
         }, 0L, 20L);
         plugin.cancelBoss().put(player.getName(), task);
@@ -46,7 +46,7 @@ public class BossBarManager {
                 stopTask(player);
                 return;
             }
-            sendBossBar(player, plugin.getLang().get(player, "bossbar.nologin").replace("<time>", String.valueOf(time[0])), null, null);
+            sendBossBar(player, plugin.getLang().get(player, "bossbar.nologin").replace("<time>", String.valueOf(time[0])), BarColor.valueOf(plugin.getConfig().getString("config.bossbar.nologin.color")), BarStyle.valueOf(plugin.getConfig().getString("config.bossbar.nologin.style")));
             time[0]--;
         }, 0L, 20L);
         plugin.cancelBoss().put(player.getName(), task);
@@ -111,8 +111,10 @@ public class BossBarManager {
 
     private BossBar createBossBar(Player player, String msg, BarColor color, BarStyle style) {
 
-        if (color == null || style == null) {
+        if (color == null || color.name().isEmpty()) {
             color = BarColor.valueOf(plugin.getConfig().getString("config.bossbar.color"));
+        }
+        if (style == null || style.name().isEmpty()) {
             style = BarStyle.valueOf(plugin.getConfig().getString("config.bossbar.style"));
         }
 

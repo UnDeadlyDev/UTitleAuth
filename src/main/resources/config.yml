@@ -47,28 +47,34 @@ config:
         stay: 5
   bossbar:
     enabled: true
-    color: RED # ONLY WORK IN 1.9 TO UP
-    style: SOLID # ONLY WORK IN 1.9 TO UP
+    color: RED # This is only detected when some setting is incorrect.
+    style: SOLID # This is only detected when some setting is incorrect.
+    noregister:
+      color: RED # Available colors: BLUE, RED, PINK, GREEN, PURPLE, WHITE, YELLOW
+      style: SOLID # Available styles: solid, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20
+    nologin:
+      color: GREEN
+      style: SOLID
     register:
-      color: RED #ONLY WORK IN 1.9 TO UP
-      style: SOLID #ONLY WORK IN 1.9 TO UP
+      color: RED
+      style: SOLID
       notification:
         enabled: true
-      time: #This is time of stay message in seconds.
+      time:
         stay: 5
     login:
-      color: RED #ONLY WORK IN 1.9 TO UP
-      style: SOLID #ONLY WORK IN 1.9 TO UP
+      color: RED
+      style: SOLID
       notification:
         enabled: true
-      time: #This is time of stay message in seconds.
+      time:
         stay: 5
     autologin:
-      color: RED #ONLY WORK IN 1.9 TO UP
-      style: SOLID #ONLY WORK IN 1.9 TO UP
+      color: RED
+      style: SOLID
       notification:
         enabled: true
-      time: #This is time of stay message in seconds.
+      time:
         stay: 5
   xpcountdownanimation:
     enabled: true
